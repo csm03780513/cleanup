@@ -16,18 +16,24 @@ public class LoginModule {
     LoginData loginData;
 
 
-
     public LoginModule(LoginData loginData) {
         this.loginData = loginData;
     }
 
     public LoginData authenticateCredentials(UsersData usersData) {
-        String password = usersRepository.findByUsername(usersData.getUsername()).getPassword();
+        UsersData user = usersRepository.findByUsername(usersData.getUsername());
 
-        if (usersData.getPassword().equals(password)) {
-            loginData.setLoginMessage(GlobalVariables.SUCCESSFUL_MESSAGE);
-            loginData.setResponseCode(200);
-            loginData.setSuccessful(true);
+
+        if (user != null) {
+            if (user.getPassword().equals(usersData.getPassword())) {
+                loginData.setLoginMessage(GlobalVariables.SUCCESSFUL_MESSAGE);
+                loginData.setResponseCode(200);
+                loginData.setSuccessful(true);
+            }
+        } else {
+            loginData.setLoginMessage(GlobalVariables.FAILURE_MESSAGE);
+            loginData.setResponseCode(300);
+            loginData.setSuccessful(false);
         }
 
         return loginData;
